@@ -16,4 +16,12 @@
 import Navigation from "@/Components/app/Navigation.vue";
 import SearchForm from "@/Components/app/SearchForm.vue";
 import UserSettingsDropdown from "@/Components/app/UserSettingsDropdown.vue";
+import { emitter, FILE_UPLOAD_STARTED } from "@/event-bus.js";
+import { onMounted, ref } from "vue";
+function uploadFiles(files) {
+    console.log(files);
+}
+onMounted(() => {
+    emitter.on(FILE_UPLOAD_STARTED, uploadFiles);
+});
 </script>

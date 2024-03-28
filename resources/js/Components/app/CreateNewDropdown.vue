@@ -29,22 +29,22 @@
                     </MenuItem>
                 </div>
                 <div class="px-1 py-1">
-                    <!-- <FileUploadMenuItem /> -->
-                    <!-- <FolderUploadMenuItem /> -->
+                    <FileUploadMenuItem />
+                    <FolderUploadMenuItem />
                 </div>
             </MenuItems>
         </transition>
     </Menu>
-    <!-- <CreateFolderModal v-model="createFolderModal" /> -->
+    <CreateFolderModal v-model="createFolderModal" />
 </template>
 
 <script setup>
 // Imports
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-// import CreateFolderModal from "@/Components/app/CreateFolderModal.vue";
+import CreateFolderModal from "@/Components/app/CreateFolderModal.vue";
 import { ref } from "vue";
-//import FileUploadMenuItem from "@/Components/app/FileUploadMenuItem.vue";
-//import FolderUploadMenuItem from "@/Components/app/FolderUploadMenuItem.vue";
+import FileUploadMenuItem from "@/Components/app/FileUploadMenuItem.vue";
+import FolderUploadMenuItem from "@/Components/app/FolderUploadMenuItem.vue";
 
 // Uses
 
