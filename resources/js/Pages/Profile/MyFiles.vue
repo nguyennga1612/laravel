@@ -125,7 +125,6 @@ const { files } = defineProps({
 });
 
 function openFolder(file) {
-    console.log(234);
     if (!file.is_folder) {
         return;
     }
