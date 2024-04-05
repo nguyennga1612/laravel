@@ -78,11 +78,29 @@ class StoreFileRequest extends ParentIdBaseRequest
     protected function passedValidation()
     {
         $data = $this->validated();
-        // dd($this->file_paths);
-        dd($data['files']);
+        $this->replace([
+            'file_tree' => $this->buildFileTree($this->file_paths, $data['files'])
+        ]);
+    }
 
-        // $this->replace([
-        //     'file_tree' => $this->buildFileTree($this->file_paths, $data['files'])
-        // ]);
+    private function buildFileTree($filePaths, $files)
+    {
+        $filePaths = array_filter($filePaths, fn ($f) => $f != null);
+        $tree = [];
+        foreach ($filePaths as $ind => $filePath) {
+            $parts = explode('/', $filePath);
+            $currentNode = &$tree;
+            foreach ($parts as $i => $part) {
+                if (!isset($currentNode[$part])) {
+                    $currentNode[$part] = [];
+                }
+                if ($i === count($parts) - 1) {
+                    $currentNode[$part] = $files[$ind];
+                } else {
+                    $currentNode = &$currentNode[$part];
+                }
+            }
+        }
+        return $tree;
     }
 }

@@ -52,8 +52,39 @@ class FileController extends Controller
     public function store(StoreFileRequest $request)
     {
         $data = $request->validated();
-        dd($data);
-        Log::info($data);
-        //dd($data);
+        $parent = $request->parent;
+        $user = $request->user();
+        $fileTree = $request->file_tree;
+        if (!$parent) {
+            $parent = $this->getRoot();
+        }
+        if (!empty($fileTree)) {
+            $this->saveFileTree($fileTree, $parent, $user);
+        } else {
+            foreach ($data['files'] as $file) {
+                /** @var \Illuminate\Http\UploadedFile $file */
+
+                $this->saveFile($file, $user, $parent);
+            }
+        }
+    }
+    /**
+     *
+     *
+     * @param $file
+     * @param $user
+     * @param $parent
+     * @author Zura Sekhniashvili <zurasekhniashvili@gmail.com>
+     */
+    private function saveFile($file, $user, $parent): void
+    {
+        $path = $file->store('/files/' . $user->id, 'local');
+        $model = new File();
+        $model->storage_path = $path;
+        $model->is_folder = false;
+        $model->name = $file->getClientOriginalName();
+        $model->mime = $file->getMimeType();
+        $model->size = $file->getSize();
+        $parent->appendNode($model);
     }
 }
