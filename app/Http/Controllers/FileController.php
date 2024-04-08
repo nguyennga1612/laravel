@@ -87,4 +87,23 @@ class FileController extends Controller
         $model->size = $file->getSize();
         $parent->appendNode($model);
     }
+
+    private function saveFileTree($fileTree, $parent, $user): void
+    {
+        foreach ($fileTree as $name => $file) {
+            if(is_array($file))
+            {
+                $folder = new File();
+                $folder->is_folder = 1;
+                $folder->name = $name;
+                $parent->appendNode($folder);
+                $this->saveFileTree($file, $folder, $user);
+
+            } else {
+                $this->saveFile($file, $user, $parent);
+            }
+        }
+
+    }
+
 }
