@@ -84,7 +84,7 @@ function createFolder() {
 }
 
 function closeModal() {
-    emit("update:modelValue");
+    emit("update:modelValue", false);
     form.clearErrors();
     form.reset();
 }

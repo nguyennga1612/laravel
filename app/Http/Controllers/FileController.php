@@ -7,13 +7,14 @@ use App\Http\Requests\StoreFolderRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class FileController extends Controller
 {
-    public function myFiles(string $folder = null)
+    public function myFiles(Request $request, string $folder = null)
     {
         if ($folder) {
             $folder = File::query()->where('created_by', Auth::id())->where('path', $folder)->firstOrFail();
@@ -25,8 +26,11 @@ class FileController extends Controller
             ->where('created_by', Auth::id())
             ->orderBy('is_folder', 'desc')
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(15);
         $files = FileResource::collection($files);
+        if ($request->wantsJson()) {
+            return $files;
+        }
         $ancestors = FileResource::collection([...$folder->ancestors, $folder]);
         return Inertia::render('Profile/MyFiles', compact('files', 'folder', 'ancestors'));
     }
@@ -68,6 +72,7 @@ class FileController extends Controller
             }
         }
     }
+
     /**
      *
      *
@@ -91,19 +96,15 @@ class FileController extends Controller
     private function saveFileTree($fileTree, $parent, $user): void
     {
         foreach ($fileTree as $name => $file) {
-            if(is_array($file))
-            {
+            if (is_array($file)) {
                 $folder = new File();
                 $folder->is_folder = 1;
                 $folder->name = $name;
                 $parent->appendNode($folder);
                 $this->saveFileTree($file, $folder, $user);
-
             } else {
                 $this->saveFile($file, $user, $parent);
             }
         }
-
     }
-
 }
