@@ -32,6 +32,7 @@
 import { ref } from "vue";
 import ConfirmationDialog from "@/Components/ConfirmationDialog.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
+import { showErrorDialog, showSuccessNotification } from "@/event-bus.js";
 const showDeleteDialog = ref(false);
 const page = usePage();
 const deleteFilesForm = useForm({
@@ -52,9 +53,30 @@ const props = defineProps({
 });
 const emit = defineEmits(["delete"]);
 function onDeleteClick() {
+    console.log(props);
+    if (!props.deleteAll && !props.deleteIds.length) {
+        showErrorDialog("Please select at least one file to delete");
+        return;
+    }
     showDeleteDialog.value = true;
 }
 function onDeleteCancel() {
     showDeleteDialog.value = false;
+}
+function onDeleteConfirm() {
+    deleteFilesForm.parent_id = page.props.folder.id;
+    if (props.deleteAll) {
+        deleteFilesForm.all = true;
+    } else {
+        deleteFilesForm.ids = props.deleteIds;
+    }
+    console.log(props.deleteAll);
+    deleteFilesForm.delete(route("file.delete"), {
+        onSuccess: () => {
+            showDeleteDialog.value = false;
+            emit("delete");
+            showSuccessNotification("Selected files have been deleted");
+        },
+    });
 }
 </script>

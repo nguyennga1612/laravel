@@ -41,7 +41,8 @@
             <div>
                 <DeleteFilesButton
                     :delete-all="allSelected"
-                    :delete-id="selectedIds"
+                    :delete-ids="selectedIds"
+                    @delete="onDelete"
                 />
             </div>
         </nav>
@@ -214,6 +215,12 @@ function onSelectCheckboxChange(file) {
 function toggleFileSelect(file) {
     selected.value[file.id] = !selected.value[file.id];
     onSelectCheckboxChange(file);
+}
+
+function onDelete() {
+    console.log(123);
+    allSelected.value = false;
+    selected.value = {};
 }
 
 onMounted(() => {
