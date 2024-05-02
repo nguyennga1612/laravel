@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Kalnoy\Nestedset\NodeTrait;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class File extends Model
 {
@@ -59,5 +60,11 @@ class File extends Model
             }
             $model->path = (!$model->parent->isRoot() ? $model->parent->path . '/' : '') . Str::slug($model->name);
         });
+    }
+
+    public function moveToTrash()
+    {
+        $this->deleted_at = Carbon::now();
+        return $this->save();
     }
 }

@@ -48,7 +48,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 import { nextTick, ref } from "vue";
-//import { showSuccessNotification } from "@/event-bus.js";
+import { showSuccessNotification } from "@/event-bus.js";
 
 const form = useForm({
     name: "",
